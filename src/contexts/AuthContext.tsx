@@ -58,10 +58,10 @@ export const useAuth = () => {
 
 const jonathanUser: User = {
   id: '2',
-  name: 'Jonathan George Jeremiah',
-  email: 'johathan23j@gmail.com', // Updated to match login credentials
+  name: 'Violet Joseph',
+  email: 'violetjoseph28@gmail.com', // Updated to match login credentials
   demoBalance: 10000,
-  liveBalance: 21000,
+  liveBalance: 0,
   totalTrades: 0,
   winRate: 0,
   totalPnL: 0,
@@ -70,7 +70,7 @@ const jonathanUser: User = {
 
 // Helper to recalculate liveBalance from trade history
 function recalculateLiveBalance(user: User, trades: any[]): number {
-  const initialBalance = jonathanUser.liveBalance;
+  const initialBalance = 0; // Live account starts with 0 balance
   const totalProfit = trades.reduce((sum, trade) => sum + (trade.profit || 0), 0);
   return initialBalance + totalProfit;
 }
@@ -80,10 +80,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    localStorage.clear();
     const savedUser = localStorage.getItem('qxTrader_user');
     if (!savedUser) {
-      // Initialize demo-ready user
+      // Initialize demo-ready user only if no user exists
       localStorage.setItem('qxTrader_user', JSON.stringify(jonathanUser));
       setUser(jonathanUser);
       setIsAuthenticated(false);
@@ -128,7 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string): Promise<boolean> => {
     let authenticatedUser: User | null = null;
 
-    if (email === 'johathan23j@gmail.com' && password === 'godfather23JGJJJ$!') {
+    if (email === 'violetjoseph28@gmail.com' && password === 'Veronicalawrence') {
       // Check if user already exists in localStorage
       const savedUser = localStorage.getItem('qxTrader_user');
       if (savedUser) {
@@ -157,8 +156,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     localStorage.removeItem('qxTrader_user');
+    localStorage.removeItem('userTrades');
     setUser(null);
     setIsAuthenticated(false);
+    // Redirect to landing page
+    window.location.href = '/';
   };
 
   const updateBalance = (amount: number) => {

@@ -152,11 +152,11 @@ const UserSettings = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <Label htmlFor="firstName" className="text-gray-300">First Name</Label>
-                      <Input id="firstName" defaultValue="Jonathan" className="mt-1 bg-gray-700 border-gray-600 text-white" />
+                      <Input id="firstName" defaultValue="Violet" className="mt-1 bg-gray-700 border-gray-600 text-white" />
                     </div>
                     <div>
                       <Label htmlFor="lastName" className="text-gray-300">Last Name</Label>
-                      <Input id="lastName" defaultValue="George Jeremiah" className="mt-1 bg-gray-700 border-gray-600 text-white" />
+                      <Input id="lastName" defaultValue="Joseph" className="mt-1 bg-gray-700 border-gray-600 text-white" />
                     </div>
                     <div>
                       <Label htmlFor="email" className="text-gray-300">Email Address</Label>
