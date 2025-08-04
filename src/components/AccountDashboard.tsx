@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 const AccountDashboard = () => {
-  const { user } = useAuth();
+  const { user, resetUserData } = useAuth();
   const [showBalance, setShowBalance] = useState(true);
 
   if (!user) return null;
@@ -90,6 +90,16 @@ const AccountDashboard = () => {
                   <div className="mt-3 flex items-center gap-2 text-sm text-green-400 bg-green-900/20 px-3 py-2 rounded-lg border border-green-700">
                     <TrendingUp className="h-4 w-4" />
                     Account Active
+                  </div>
+                  <div className="mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={resetUserData}
+                      className="text-xs text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white"
+                    >
+                      Reset to $115 Balance
+                    </Button>
                   </div>
                 </div>
 

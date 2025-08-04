@@ -30,6 +30,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   updateBalance: (amount: number) => void;
   setUserFromLocalStorage: () => void;
+  resetUserData: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -61,7 +62,7 @@ const jonathanUser: User = {
   name: 'Violet Joseph',
   email: 'violetjoseph28@gmail.com', // Updated to match login credentials
   demoBalance: 10000,
-  liveBalance: 0,
+  liveBalance: 115,
   totalTrades: 0,
   winRate: 0,
   totalPnL: 0,
@@ -70,7 +71,7 @@ const jonathanUser: User = {
 
 // Helper to recalculate liveBalance from trade history
 function recalculateLiveBalance(user: User, trades: any[]): number {
-  const initialBalance = 0; // Live account starts with 0 balance
+  const initialBalance = 115; // Live account starts with 115 balance
   const totalProfit = trades.reduce((sum, trade) => sum + (trade.profit || 0), 0);
   return initialBalance + totalProfit;
 }
@@ -182,13 +183,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Function to reset user data and force refresh with new balance
+  const resetUserData = () => {
+    localStorage.removeItem('qxTrader_user');
+    localStorage.removeItem('userTrades');
+    setUser(jonathanUser);
+    setIsAuthenticated(false);
+  };
+
   const value = {
     user,
     login,
     logout,
     isAuthenticated,
     updateBalance,
-    setUserFromLocalStorage
+    setUserFromLocalStorage,
+    resetUserData
   };
 
   return (
