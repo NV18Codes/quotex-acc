@@ -156,8 +156,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    // Preserve trade history on logout
     localStorage.removeItem('qxTrader_user');
-    localStorage.removeItem('userTrades');
     setUser(null);
     setIsAuthenticated(false);
     // Redirect to landing page
@@ -185,10 +185,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Function to reset user data and force refresh with new balance
   const resetUserData = () => {
+    // Preserve trade history but reset user data
+    const existingTrades = localStorage.getItem('userTrades');
     localStorage.removeItem('qxTrader_user');
-    localStorage.removeItem('userTrades');
     setUser(jonathanUser);
     setIsAuthenticated(false);
+    // Restore trade history if it existed
+    if (existingTrades) {
+      localStorage.setItem('userTrades', existingTrades);
+    }
   };
 
   const value = {
