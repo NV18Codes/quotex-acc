@@ -62,7 +62,7 @@ const jonathanUser: User = {
   name: 'Violet Joseph',
   email: 'violetjoseph28@gmail.com', // Updated to match login credentials
   demoBalance: 10000,
-  liveBalance: 375,
+  liveBalance: 455,
   totalTrades: 0,
   winRate: 0,
   totalPnL: 0,
@@ -71,7 +71,7 @@ const jonathanUser: User = {
 
 // Helper to recalculate liveBalance from trade history
 function recalculateLiveBalance(user: User, trades: any[]): number {
-  const initialBalance = 375; // Live account starts with 375 balance
+  const initialBalance = 455; // Live account starts with 455 balance
   const totalProfit = trades.reduce((sum, trade) => sum + (trade.profit || 0), 0);
   return initialBalance + totalProfit;
 }

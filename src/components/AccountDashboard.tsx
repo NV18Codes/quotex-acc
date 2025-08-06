@@ -98,7 +98,7 @@ const AccountDashboard = () => {
                       onClick={resetUserData}
                       className="text-xs text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white"
                     >
-                      Reset to $375 Balance
+                      Reset to $455 Balance
                     </Button>
                   </div>
                 </div>
