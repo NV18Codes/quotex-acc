@@ -31,6 +31,7 @@ interface AuthContextType {
   updateBalance: (amount: number) => void;
   setUserFromLocalStorage: () => void;
   resetUserData: () => void;
+  forceUpdateBalance: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -62,7 +63,7 @@ const jonathanUser: User = {
   name: 'Violet Joseph',
   email: 'violetjoseph28@gmail.com', // Updated to match login credentials
   demoBalance: 10000,
-  liveBalance: 455,
+  liveBalance: 1870,
   totalTrades: 0,
   winRate: 0,
   totalPnL: 0,
@@ -71,7 +72,7 @@ const jonathanUser: User = {
 
 // Helper to recalculate liveBalance from trade history
 function recalculateLiveBalance(user: User, trades: any[]): number {
-  const initialBalance = 455; // Live account starts with 455 balance
+  const initialBalance = 1870; // Live account starts with 1870 balance
   const totalProfit = trades.reduce((sum, trade) => sum + (trade.profit || 0), 0);
   return initialBalance + totalProfit;
 }
@@ -89,7 +90,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAuthenticated(false);
     } else {
       const userData = JSON.parse(savedUser);
-      setUser(userData);
+      // Force update the balance to the new value
+      const updatedUser = { ...userData, liveBalance: 1870 };
+      localStorage.setItem('qxTrader_user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
       setIsAuthenticated(true);
     }
 
@@ -196,6 +200,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Function to force update balance
+  const forceUpdateBalance = () => {
+    if (user) {
+      const updatedUser = { ...user, liveBalance: 1870 };
+      setUser(updatedUser);
+      localStorage.setItem('qxTrader_user', JSON.stringify(updatedUser));
+    }
+  };
+
   const value = {
     user,
     login,
@@ -203,7 +216,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAuthenticated,
     updateBalance,
     setUserFromLocalStorage,
-    resetUserData
+    resetUserData,
+    forceUpdateBalance
   };
 
   return (

@@ -1,8 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 import { 
   Menu, 
   X, 
@@ -14,7 +21,12 @@ import {
   BookOpen,
   Info,
   Home,
-  Clock
+  Clock,
+  ArrowUpRight,
+  ArrowDownLeft,
+  FileText,
+  ChevronDown,
+  Wallet
 } from 'lucide-react';
 import AuthModal from './AuthModal';
 
@@ -22,7 +34,26 @@ const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [balance, setBalance] = useState(user?.liveBalance || 0);
   const location = useLocation();
+
+  // Update balance when user changes
+  useEffect(() => {
+    if (user?.liveBalance) {
+      setBalance(user.liveBalance);
+    }
+  }, [user?.liveBalance]);
+
+  // Force update balance from localStorage on component mount
+  useEffect(() => {
+    const savedUser = localStorage.getItem('qxTrader_user');
+    if (savedUser) {
+      const userData = JSON.parse(savedUser);
+      if (userData.liveBalance) {
+        setBalance(userData.liveBalance);
+      }
+    }
+  }, []);
 
   const navigation = [
     { name: 'Home', href: '/', icon: Home },
@@ -37,6 +68,12 @@ const Navbar = () => {
     { name: 'Markets', href: '/markets', icon: DollarSign },
     { name: 'Recent Trades', href: '/recent-trades', icon: Clock },
     { name: 'Settings', href: '/settings', icon: Settings }
+  ];
+
+  const financialPages = [
+    { name: 'Deposit', href: '/deposit', icon: ArrowUpRight },
+    { name: 'Withdrawal', href: '/withdrawal', icon: ArrowDownLeft },
+    { name: 'Transactions', href: '/transactions', icon: FileText }
   ];
 
   const handleLogout = () => {
@@ -88,6 +125,44 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
+                  
+                  {/* Financial Pages Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                          financialPages.some(page => isActive(page.href))
+                            ? 'text-blue-400 bg-blue-900/20'
+                            : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                        }`}
+                      >
+                        <Wallet className="h-4 w-4" />
+                        <span>Financial</span>
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-48 bg-gray-800 border-gray-700">
+                      {financialPages.map((page) => {
+                        const Icon = page.icon;
+                        return (
+                          <DropdownMenuItem key={page.name} asChild>
+                            <Link
+                              to={page.href}
+                              className={`flex items-center space-x-2 px-3 py-2 text-sm cursor-pointer ${
+                                isActive(page.href)
+                                  ? 'text-blue-400 bg-blue-900/20'
+                                  : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                              }`}
+                            >
+                              <Icon className="h-4 w-4" />
+                              <span>{page.name}</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </>
               ) : (
                 // Non-authenticated user navigation
@@ -124,7 +199,7 @@ const Navbar = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Badge className="bg-green-600 text-white">
-                      ${user?.liveBalance.toLocaleString()}
+                      ${balance.toLocaleString()}
                     </Badge>
                     <Button
                       variant="ghost"
@@ -187,13 +262,38 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
+                  
+                  {/* Financial Pages Section */}
+                  <div className="pt-2 pb-2">
+                    <div className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Financial
+                    </div>
+                    {financialPages.map((page) => {
+                      const Icon = page.icon;
+                      return (
+                        <Link
+                          key={page.name}
+                          to={page.href}
+                          onClick={() => setIsMenuOpen(false)}
+                          className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                            isActive(page.href)
+                              ? 'text-blue-400 bg-blue-900/20'
+                              : 'text-gray-300 hover:text-white hover:bg-gray-700'
+                          }`}
+                        >
+                          <Icon className="h-5 w-5" />
+                          <span>{page.name}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
                   <div className="pt-4 pb-3 border-t border-gray-700">
                     <div className="px-3 py-2">
                       <div className="text-sm text-white font-medium">{user?.name}</div>
                       <div className="text-xs text-gray-400">Live Account</div>
                       <div className="mt-2">
                         <Badge className="bg-green-600 text-white">
-                          ${user?.liveBalance.toLocaleString()}
+                          ${balance.toLocaleString()}
                         </Badge>
                       </div>
                     </div>

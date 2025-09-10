@@ -9,6 +9,9 @@ import Education from './pages/Education';
 import About from './pages/About';
 import UserSettings from './pages/UserSettings';
 import RecentTrades from './pages/RecentTrades';
+import Deposit from './pages/Deposit';
+import Withdrawal from './pages/Withdrawal';
+import Transactions from './pages/Transactions';
 import NotFound from './pages/NotFound';
 import { Toaster } from './components/ui/toaster';
 
@@ -27,6 +30,9 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/settings" element={<UserSettings />} />
           <Route path="/recent-trades" element={<RecentTrades />} />
+          <Route path="/deposit" element={<Deposit />} />
+          <Route path="/withdrawal" element={<Withdrawal />} />
+          <Route path="/transactions" element={<Transactions />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

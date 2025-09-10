@@ -25,7 +25,7 @@ import {
 import { getUnifiedTradeData } from '@/contexts/AuthContext';
 
 const TradingDashboard = () => {
-  const { user } = useAuth();
+  const { user, forceUpdateBalance } = useAuth();
   const [liveBalance, setLiveBalance] = useState(user?.liveBalance || 0);
   // Only use user's actual trade history
   const { trades: unifiedTrades, stats: unifiedStats } = getUnifiedTradeData(user?.tradeHistory);
@@ -138,6 +138,22 @@ const TradingDashboard = () => {
                 </span>
                 <span className="text-xs text-gray-500 ml-2">(Live updates)</span>
               </p>
+              <button
+                onClick={() => {
+                  // Clear localStorage and set new balance
+                  const savedUser = localStorage.getItem('qxTrader_user');
+                  if (savedUser) {
+                    const userData = JSON.parse(savedUser);
+                    userData.liveBalance = 1870;
+                    localStorage.setItem('qxTrader_user', JSON.stringify(userData));
+                  }
+                  // Force reload immediately
+                  window.location.reload();
+                }}
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+              >
+                Update Balance to $1,870
+              </button>
               <div className="flex items-center gap-4 mt-2">
                 <Badge className="bg-blue-600 text-white">
                   <Trophy className="h-3 w-3 mr-1" />
