@@ -54,139 +54,47 @@ const Transactions = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Redirect to login if not authenticated
-  if (!isAuthenticated || !user) {
-    navigate('/');
-    return null;
-  }
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      navigate('/');
+    }
+  }, [isAuthenticated, user, navigate]);
 
   // Mock transaction data
   useEffect(() => {
     const mockTransactions: Transaction[] = [
       {
-        id: 'TXN001',
-        type: 'deposit',
-        amount: 500,
-        method: 'Credit Card',
-        status: 'completed',
-        date: '2024-01-15T10:30:00Z',
-        description: 'Initial deposit',
-        reference: 'DEP-001',
-        fee: 12.50
-      },
-      {
-        id: 'TXN002',
-        type: 'trade_profit',
-        amount: 150,
-        method: 'Binary Options',
-        status: 'completed',
-        date: '2024-01-15T14:22:00Z',
-        description: 'EUR/USD Call option - Win',
-        reference: 'TRADE-001'
-      },
-      {
-        id: 'TXN003',
-        type: 'trade_loss',
-        amount: -100,
-        method: 'Binary Options',
-        status: 'completed',
-        date: '2024-01-15T15:45:00Z',
-        description: 'GBP/USD Put option - Loss',
-        reference: 'TRADE-002'
-      },
-      {
-        id: 'TXN004',
+        id: 'WTH-001',
         type: 'withdrawal',
         amount: 1000,
         method: 'Bank Transfer',
         status: 'pending',
-        date: '2024-01-22T09:00:00Z',
+        date: '2025-09-08T10:23:00',
         description: 'Withdrawal request - Monday morning',
         reference: 'WTH-001',
         fee: 0
       },
       {
-        id: 'TXN005',
+        id: 'WTH-002',
         type: 'withdrawal',
         amount: 1000,
         method: 'Bank Transfer',
         status: 'pending',
-        date: '2024-01-23T14:30:00Z',
-        description: 'Withdrawal request - Tuesday afternoon',
+        date: '2025-09-09T10:23:00',
+        description: 'Withdrawal request - Tuesday morning',
         reference: 'WTH-002',
         fee: 0
       },
       {
-        id: 'TXN006',
+        id: 'WTH-003',
         type: 'withdrawal',
         amount: 1000,
         method: 'Bank Transfer',
         status: 'pending',
-        date: '2024-01-24T09:15:00Z',
+        date: '2025-09-10T10:00:00',
         description: 'Withdrawal request - Wednesday morning',
         reference: 'WTH-003',
         fee: 0
-      },
-      {
-        id: 'TXN007',
-        type: 'bonus',
-        amount: 50,
-        method: 'Welcome Bonus',
-        status: 'completed',
-        date: '2024-01-14T08:00:00Z',
-        description: 'Welcome bonus for new account',
-        reference: 'BONUS-001'
-      },
-      {
-        id: 'TXN008',
-        type: 'deposit',
-        amount: 1000,
-        method: 'Cryptocurrency',
-        status: 'completed',
-        date: '2024-01-13T16:30:00Z',
-        description: 'Bitcoin deposit',
-        reference: 'DEP-002',
-        fee: 10
-      },
-      {
-        id: 'TXN009',
-        type: 'trade_profit',
-        amount: 75,
-        method: 'Binary Options',
-        status: 'completed',
-        date: '2024-01-13T11:20:00Z',
-        description: 'USD/JPY Call option - Win',
-        reference: 'TRADE-003'
-      },
-      {
-        id: 'TXN010',
-        type: 'withdrawal',
-        amount: 300,
-        method: 'E-Wallet',
-        status: 'failed',
-        date: '2024-01-12T13:45:00Z',
-        description: 'PayPal withdrawal - Insufficient funds',
-        reference: 'WTH-004',
-        fee: 9
-      },
-      {
-        id: 'TXN011',
-        type: 'refund',
-        amount: 25,
-        method: 'Credit Card',
-        status: 'completed',
-        date: '2024-01-11T10:15:00Z',
-        description: 'Refund for failed transaction',
-        reference: 'REF-001'
-      },
-      {
-        id: 'TXN012',
-        type: 'trade_loss',
-        amount: -50,
-        method: 'Binary Options',
-        status: 'completed',
-        date: '2024-01-10T14:30:00Z',
-        description: 'AUD/USD Call option - Loss',
-        reference: 'TRADE-004'
       }
     ];
 
@@ -298,12 +206,15 @@ const Transactions = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    const date = new Date(dateString);
+    // Convert to local time and format
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: true
     });
   };
 
@@ -327,6 +238,11 @@ const Transactions = () => {
   const totalLosses = transactions
     .filter(t => t.type === 'trade_loss' && t.status === 'completed')
     .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+  // Don't render if not authenticated
+  if (!isAuthenticated || !user) {
+    return null;
+  }
 
   if (isLoading) {
     return (

@@ -110,24 +110,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user]);
 
-  // Update liveBalance automatically when trades change
+  // Force balance to always be 1870 for Violet's account
   useEffect(() => {
-    if (user) {
-      const savedTrades = localStorage.getItem('userTrades');
-      let trades = [];
-      if (savedTrades) {
-        try {
-          trades = JSON.parse(savedTrades);
-        } catch {
-          trades = [];
-        }
-      }
-      const newBalance = recalculateLiveBalance(user, trades);
-      if (user.liveBalance !== newBalance) {
-        setUser({ ...user, liveBalance: newBalance });
+    if (user && user.email === 'violetjoseph28@gmail.com') {
+      if (user.liveBalance !== 1870) {
+        setUser({ ...user, liveBalance: 1870 });
       }
     }
-  }, [user?.id, user?.email, user?.name]);
+  }, [user]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     let authenticatedUser: User | null = null;
